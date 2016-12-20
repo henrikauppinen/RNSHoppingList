@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import {
+  Alert,
   AppRegistry,
   StyleSheet,
   Text,
@@ -18,6 +19,8 @@ import {
   List,
   ListItem
 } from 'react-native-elements';
+
+import { ListEntryInput } from './app/ListEntryInput';
 
 const listData = [
   {id: 0, text: 'Rivi 1'},
@@ -55,7 +58,8 @@ const ds = new ListView.DataSource({rowHasChanged});
 export default class RNShoppingList extends Component {
 
   state = {
-    dataSource: ds.cloneWithRows(listData)
+    dataSource: ds.cloneWithRows(listData),
+    text: 'empty'
   };
 
   renderRow(rowData, sectionID) {
@@ -67,21 +71,49 @@ export default class RNShoppingList extends Component {
     );
   }
 
+  onAddListItem = (text) => {
+    // const {oldtext} = this.state.text;
+
+    this.setState({
+      text: text,
+    })
+  }
+
+  addNewListItem = (inputText) =>  {
+    this.setState({
+      text: inputText
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
+
         <View style={styles.topArea}>
-          <FormInput
-            placeholder='Lisää rivi...'
-          />
+          <ListEntryInput submitHandler={this.addNewListItem} />
+          <Text>{this.state.text}</Text>
         </View>
+
         <View style={styles.listArea}>
+
           <List>
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow}
             />
           </List>
+
+        </View>
+
+        <View style={styles.listBottomPadding} />
+
+        <View style={styles.bottomArea}>
+
+          <Icon
+            reverse
+            name='add'
+            color='#4bd648'
+          />
         </View>
       </View>
 
@@ -91,9 +123,23 @@ export default class RNShoppingList extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
   },
   topArea: {
     paddingTop: 25
+  },
+  listArea: {
+    flex: 0.8
+  },
+  listBottomPadding: {
+    backgroundColor: '#ffffff',
+    height: 50
+  },
+  bottomArea: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    height: 70
   }
 });
 
